@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5899C1DJM0"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="apple-touch-icon" sizes="57x57" href="./assets/apple-icon-57x57-CVeqFuyL.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="./assets/apple-icon-60x60-D0DRvpFw.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="./assets/apple-icon-72x72-cxbzjMhL.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="./assets/apple-icon-76x76-D6szmBuJ.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="./assets/apple-icon-114x114-BoXhEAjd.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="./assets/apple-icon-120x120-DbAP_bBt.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="./assets/apple-icon-144x144-Dtk8KO22.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="./assets/apple-icon-152x152-D14N21nW.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-icon-180x180-Creq2iEo.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./assets/android-icon-192x192-I_OJMbQS.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32-BDB3HxQJ.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="./assets/favicon-96x96-BTdlYmJS.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16x16-B4P32QZQ.png">
+  <link rel="manifest" href="./assets/manifest-Y7EOB8Hb.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="assets/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  <title>Marble Roulette</title>
+  <style lang="scss">
+    * {
+      box-sizing: border-box;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    div.copyright {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 12px;
+      z-index: 999;
+      width: 90%;
+      text-align: center;
+    }
+
+    div.copyright a {
+      color: white;
+    }
+
+    #settings {
+      position: fixed;
+      bottom: 1rem;
+      left: 1rem;
+      background: #666;
+      border-radius: 10px;
+      padding: 10px;
+      z-index: 999;
+      min-width: 50%;
+
+      display: flex;
+      visibility: visible;
+      opacity: 1;
+      transition: visibility 0s, opacity 1s linear;
+
+      &.hide {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      h3 {
+        padding: 0;
+        margin: 0;
+        font-size: 12pt;
+        color: #fefefe;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 5rem;
+        border: none;
+        background: #999;
+        font-size: 14pt;
+      }
+
+      button {
+        color: #fefefe;
+        background: #222;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        position: relative;
+        overflow: hidden;
+
+        &:active:after {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+        }
+      }
+
+      .icon {
+        background: currentColor;
+        mask-repeat: no-repeat;
+        mask-position: center center;
+        mask-size: contain;
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        vertical-align: middle;
+
+        &.play {
+          mask-image: url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20384%20512'%3e%3c!--!Font%20Awesome%20Free%206.5.1%20by%20@fontawesome%20-%20https://fontawesome.com%20License%20-%20https://fontawesome.com/license/free%20Copyright%202024%20Fonticons,%20Inc.--%3e%3cpath%20d='M73%2039c-14.8-9.1-33.4-9.4-48.5-.9S0%2062.6%200%2080V432c0%2017.4%209.4%2033.4%2024.5%2041.9s33.7%208.1%2048.5-.9L361%20297c14.3-8.7%2023-24.2%2023-41s-8.7-32.2-23-41L73%2039z'/%3e%3c/svg%3e");
+        }
+
+        &.shuffle {
+          mask-image: url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20512%20512'%3e%3c!--!Font%20Awesome%20Free%206.5.1%20by%20@fontawesome%20-%20https://fontawesome.com%20License%20-%20https://fontawesome.com/license/free%20Copyright%202024%20Fonticons,%20Inc.--%3e%3cpath%20d='M403.8%2034.4c12-5%2025.7-2.2%2034.9%206.9l64%2064c6%206%209.4%2014.1%209.4%2022.6s-3.4%2016.6-9.4%2022.6l-64%2064c-9.2%209.2-22.9%2011.9-34.9%206.9s-19.8-16.6-19.8-29.6V160H352c-10.1%200-19.6%204.7-25.6%2012.8L284%20229.3%20244%20176l31.2-41.6C293.3%20110.2%20321.8%2096%20352%2096h32V64c0-12.9%207.8-24.6%2019.8-29.6zM164%20282.7L204%20336l-31.2%2041.6C154.7%20401.8%20126.2%20416%2096%20416H32c-17.7%200-32-14.3-32-32s14.3-32%2032-32H96c10.1%200%2019.6-4.7%2025.6-12.8L164%20282.7zm274.6%20188c-9.2%209.2-22.9%2011.9-34.9%206.9s-19.8-16.6-19.8-29.6V416H352c-30.2%200-58.7-14.2-76.8-38.4L121.6%20172.8c-6-8.1-15.5-12.8-25.6-12.8H32c-17.7%200-32-14.3-32-32s14.3-32%2032-32H96c30.2%200%2058.7%2014.2%2076.8%2038.4L326.4%20339.2c6%208.1%2015.5%2012.8%2025.6%2012.8h32V320c0-12.9%207.8-24.6%2019.8-29.6s25.7-2.2%2034.9%206.9l64%2064c6%206%209.4%2014.1%209.4%2022.6s-3.4%2016.6-9.4%2022.6l-64%2064z'/%3e%3c/svg%3e");
+        }
+        &.megaphone {
+          mask-image: url("data:image/svg+xml,%3c?xml%20version='1.0'%20encoding='iso-8859-1'?%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Generator:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3c!DOCTYPE%20svg%20PUBLIC%20'-//W3C//DTD%20SVG%201.1//EN'%20'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3e%3csvg%20fill='%23000000'%20height='800px'%20width='800px'%20version='1.1'%20id='Capa_1'%20xmlns='http://www.w3.org/2000/svg'%20xmlns:xlink='http://www.w3.org/1999/xlink'%20viewBox='0%200%20399.193%20399.193'%20xml:space='preserve'%3e%3cg%3e%3cpath%20d='M375.337,97.308c-3.136-4.547-9.364-5.691-13.909-2.557c-4.547,3.135-5.692,9.362-2.557,13.909%20c13.295,19.284,20.322,42.543,20.322,67.264c0,24.627-7.35,48.709-20.694,67.81c-3.163,4.527-2.058,10.762,2.47,13.925%20c1.744,1.219,3.741,1.804,5.719,1.804c3.155,0,6.262-1.491,8.206-4.273c15.897-22.753,24.3-50.163,24.3-79.265%20C399.193,147.131,390.943,119.946,375.337,97.308z'/%3e%3cpath%20d='M342.47,125.562c-3.134-4.547-9.361-5.692-13.909-2.557c-4.547,3.135-5.691,9.362-2.556,13.909%20c7.72,11.197,11.801,24.726,11.801,39.124c0,14.344-4.268,28.352-12.016,39.443c-3.163,4.527-2.058,10.762,2.47,13.925%20c1.744,1.218,3.741,1.803,5.719,1.803c3.156,0,6.262-1.49,8.206-4.274c10.22-14.627,15.621-32.228,15.621-50.897%20C357.806,157.567,352.503,140.113,342.47,125.562z'/%3e%3cpath%20d='M303.027,20.495c-4.954,0-9.532,2.757-13.586,8.167c-0.328,0.432-33.738,43.425-117.107,69.128%20c-7.914,2.44-16.663,4.163-16.748,4.18c-1.978,0.386-3.888,1.004-5.707,1.82c-3.508-5.791-9.85-9.681-17.1-9.681H48.635%20c-11.028,0-20,8.972-20,20v10.979c-1.402-0.22-2.844-0.342-4.317-0.342C10.909,124.746,0,134.272,0,145.98v55.29%20c0,11.708,10.909,21.234,24.317,21.234c1.474,0,2.915-0.121,4.317-0.342v8.979c0,11.028,8.972,20,20,20h2.704L76.731,356.46%20c3.007,12.47,15.41,22.238,28.237,22.238h26.873c7.017,0,13.365-2.951,17.417-8.096c4.053-5.145,5.434-12.008,3.789-18.83%20l-24.262-100.631h3.993c7.253,0,13.597-3.893,17.104-9.687c1.816,0.815,3.724,1.432,5.698,1.818%20c0.087,0.017,8.836,1.742,16.748,4.186c83.375,25.756,116.782,68.707,117.09,69.11c4.074,5.433,8.651,8.188,13.604,8.188%20c0,0,0,0,0.001,0c4.896,0,9.178-2.776,11.453-7.425c1.307-2.668,1.941-5.862,1.941-9.763V37.681%20C316.419,20.977,304.397,20.495,303.027,20.495z%20M24.317,202.504c-2.463,0-3.935-1.02-4.317-1.5v-54.759%20c0.383-0.48,1.854-1.5,4.317-1.5s3.935,1.02,4.317,1.5v54.759C28.252,201.485,26.78,202.504,24.317,202.504z%20M133.604,356.46%20c0.216,0.896,0.127,1.533-0.058,1.768s-0.783,0.471-1.705,0.471h-26.873c-3.662,0-7.936-3.366-8.794-6.926L71.912,251.141h36.3%20L133.604,356.46z%20M48.635,231.141V201.27v-55.29v-31.871h84.145l0,15.539c0,0.004,0,0.007,0,0.011v85.922%20c0,0.024,0.002,0.047,0.002,0.071l0,15.489H48.635z%20M296.419,294.556c-15.581-15.585-52.326-45.861-118.187-66.207%20c-8.957-2.768-18.415-4.627-18.813-4.706c-3.413-0.667-6.64-4.585-6.64-8.063v-85.922c0-3.477,3.227-7.394,6.639-8.06%20c0.398-0.078,9.853-1.935,18.809-4.697c65.854-20.303,102.604-50.591,118.192-66.192V294.556z'/%3e%3c/g%3e%3c/svg%3e");
+        }
+
+        &.record {
+          mask-image: url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20576%20512'%3e%3c!--!Font%20Awesome%20Free%206.5.1%20by%20@fontawesome%20-%20https://fontawesome.com%20License%20-%20https://fontawesome.com/license/free%20Copyright%202024%20Fonticons,%20Inc.--%3e%3cpath%20d='M0%20128C0%2092.7%2028.7%2064%2064%2064H320c35.3%200%2064%2028.7%2064%2064V384c0%2035.3-28.7%2064-64%2064H64c-35.3%200-64-28.7-64-64V128zM559.1%2099.8c10.4%205.6%2016.9%2016.4%2016.9%2028.2V384c0%2011.8-6.5%2022.6-16.9%2028.2s-23%205-32.9-1.6l-96-64L416%20337.1V320%20192%20174.9l14.2-9.5%2096-64c9.8-6.5%2022.4-7.2%2032.9-1.6z'/%3e%3c/svg%3e");
+        }
+
+        &.map {
+          mask-image: url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20576%20512'%3e%3c!--!Font%20Awesome%20Free%206.5.1%20by%20@fontawesome%20-%20https://fontawesome.com%20License%20-%20https://fontawesome.com/license/free%20Copyright%202024%20Fonticons,%20Inc.--%3e%3cpath%20d='M384%20476.1L192%20421.2V35.9L384%2090.8V476.1zm32-1.2V88.4L543.1%2037.5c15.8-6.3%2032.9%205.3%2032.9%2022.3V394.6c0%209.8-6%2018.6-15.1%2022.3L416%20474.8zM15.1%2095.1L160%2037.2V423.6L32.9%20474.5C17.1%20480.8%200%20469.2%200%20452.2V117.4c0-9.8%206-18.6%2015.1-22.3z'/%3e%3c/svg%3e");
+        }
+
+        &.trophy {
+          mask-image: url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20576%20512'%3e%3c!--!Font%20Awesome%20Free%206.5.1%20by%20@fontawesome%20-%20https://fontawesome.com%20License%20-%20https://fontawesome.com/license/free%20Copyright%202024%20Fonticons,%20Inc.--%3e%3cpath%20d='M400%200H176c-26.5%200-48.1%2021.8-47.1%2048.2c.2%205.3%20.4%2010.6%20.7%2015.8H24C10.7%2064%200%2074.7%200%2088c0%2092.6%2033.5%20157%2078.5%20200.7c44.3%2043.1%2098.3%2064.8%20138.1%2075.8c23.4%206.5%2039.4%2026%2039.4%2045.6c0%2020.9-17%2037.9-37.9%2037.9H192c-17.7%200-32%2014.3-32%2032s14.3%2032%2032%2032H384c17.7%200%2032-14.3%2032-32s-14.3-32-32-32H357.9C337%20448%20320%20431%20320%20410.1c0-19.6%2015.9-39.2%2039.4-45.6c39.9-11%2093.9-32.7%20138.2-75.8C542.5%20245%20576%20180.6%20576%2088c0-13.3-10.7-24-24-24H446.4c.3-5.2%20.5-10.4%20.7-15.8C448.1%2021.8%20426.5%200%20400%200zM48.9%20112h84.4c9.1%2090.1%2029.2%20150.3%2051.9%20190.6c-24.9-11-50.8-26.5-73.2-48.3c-32-31.1-58-76-63-142.3zM464.1%20254.3c-22.4%2021.8-48.3%2037.3-73.2%2048.3c22.7-40.3%2042.8-100.5%2051.9-190.6h84.4c-5.1%2066.3-31.1%20111.2-63%20142.3z'/%3e%3c/svg%3e");
+        }
+
+        &.bomb {
+          mask-image: url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20512%20512'%3e%3c!--!Font%20Awesome%20Free%206.5.1%20by%20@fontawesome%20-%20https://fontawesome.com%20License%20-%20https://fontawesome.com/license/free%20Copyright%202024%20Fonticons,%20Inc.--%3e%3cpath%20d='M459.1%2052.4L442.6%206.5C440.7%202.6%20436.5%200%20432.1%200s-8.5%202.6-10.4%206.5L405.2%2052.4l-46%2016.8c-4.3%201.6-7.3%205.9-7.2%2010.4c0%204.5%203%208.7%207.2%2010.2l45.7%2016.8%2016.8%2045.8c1.5%204.4%205.8%207.5%2010.4%207.5s8.9-3.1%2010.4-7.5l16.5-45.8%2045.7-16.8c4.2-1.5%207.2-5.7%207.2-10.2c0-4.6-3-8.9-7.2-10.4L459.1%2052.4zm-132.4%2053c-12.5-12.5-32.8-12.5-45.3%200l-2.9%202.9C256.5%20100.3%20232.7%2096%20208%2096C93.1%2096%200%20189.1%200%20304S93.1%20512%20208%20512s208-93.1%20208-208c0-24.7-4.3-48.5-12.2-70.5l2.9-2.9c12.5-12.5%2012.5-32.8%200-45.3l-80-80zM200%20192c-57.4%200-104%2046.6-104%20104v8c0%208.8-7.2%2016-16%2016s-16-7.2-16-16v-8c0-75.1%2060.9-136%20136-136h8c8.8%200%2016%207.2%2016%2016s-7.2%2016-16%2016h-8z'/%3e%3c/svg%3e");
+        }
+      }
+
+      div.left {
+        flex-grow: 1;
+        flex-shrink: 1;
+        order: 1;
+
+        .actions {
+          display: flex;
+          align-items: center;
+          justify-content: stretch;
+          gap: 2px;
+          div.sep {
+            flex-grow: 1;
+          }
+        }
+      }
+
+      div.right {
+        order: 2;
+        flex-grow: 0;
+        flex-shrink: 0;
+
+        div.row {
+          display: flex;
+          align-items: center;
+          height: 35px;
+
+          label {
+            width: 150px;
+            flex-grow: 0;
+            flex-shrink: 0;
+            padding-left: 1rem;
+            color: white;
+          }
+        }
+      }
+
+      select {
+        height: 25px;
+        width: 100%;
+        border-radius: 5px;
+        background: #999;
+      }
+
+      input[type=checkbox] {
+        width: 0;
+        height: 25px;
+        position: relative;
+        vertical-align: middle;
+
+        &:before {
+          position: absolute;
+          content: '';
+          display: inline-block;
+          width: 50px;
+          height: 25px;
+          border-radius: 25px;
+          background: #999;
+          top: 0;
+          left: 0;
+        }
+
+        &:after {
+          position: absolute;
+          top: 0;
+          left: 0;
+          content: '';
+          border-radius: 25px;
+          width: 25px;
+          height: 25px;
+          background: #ccc;
+          transition: transform .2s;
+        }
+
+        &:checked:after {
+          transform: translateX(100%);
+          background: white;
+        }
+
+        &:checked:before {
+          content: '';
+          background: #00baff;
+        }
+      }
+
+      .btn-group {
+        display: flex;
+        justify-content: stretch;
+
+        & > * {
+          box-sizing: border-box;
+          flex-grow: 0;
+          flex-shrink: 0;
+          overflow: hidden;
+          height: 25px;
+          width: 33%;
+          border-radius: 0;
+          background: #999;
+          border: none;
+          padding: 0;
+          color: #fefefe;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          &:first-child {
+            border-radius: 10px 0 0 10px;
+          }
+
+          &:last-child {
+            border-radius: 0 10px 10px 0;
+          }
+
+          &.active:before {
+            content: '';
+            width: 15px;
+            height: 15px;
+            display: inline-block;
+            vertical-align: middle;
+            mask-image: url("data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20448%20512'%3e%3c!--!Font%20Awesome%20Free%206.5.1%20by%20@fontawesome%20-%20https://fontawesome.com%20License%20-%20https://fontawesome.com/license/free%20Copyright%202024%20Fonticons,%20Inc.--%3e%3cpath%20d='M438.6%20105.4c12.5%2012.5%2012.5%2032.8%200%2045.3l-256%20256c-12.5%2012.5-32.8%2012.5-45.3%200l-128-128c-12.5-12.5-12.5-32.8%200-45.3s32.8-12.5%2045.3%200L160%20338.7%20393.4%20105.4c12.5-12.5%2032.8-12.5%2045.3%200z'/%3e%3c/svg%3e");
+            mask-repeat: no-repeat;
+            background: white;
+          }
+
+          &.active {
+            background: #333;
+          }
+        }
+
+        input[type=number] {
+          box-sizing: border-box;
+          text-align: center;
+        }
+      }
+    }
+
+    #notice {
+      display: none;
+      position: fixed;
+      overflow: hidden;
+      top: 50%;
+      left: 50%;
+      width: 500px;
+      max-width: 90%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 30px;
+      z-index: 1001;
+      padding: 10px 10px;
+      color: #333;
+      flex-direction: column;
+
+      h1 {
+        background-color: #ffdd00;
+        margin: -10px -10px 0 -10px;
+        padding: 10px 5px 10px .5em;
+        border-bottom: 1px solid #333;
+        display: flex;
+        align-items: center;
+        &:before {
+          content: '';
+          display: inline-block;
+          width: 1em;
+          height: 1em;
+          background-image: url("data:image/svg+xml,%3c?xml%20version='1.0'%20encoding='iso-8859-1'?%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Generator:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3c!DOCTYPE%20svg%20PUBLIC%20'-//W3C//DTD%20SVG%201.1//EN'%20'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3e%3csvg%20fill='%23000000'%20height='800px'%20width='800px'%20version='1.1'%20id='Capa_1'%20xmlns='http://www.w3.org/2000/svg'%20xmlns:xlink='http://www.w3.org/1999/xlink'%20viewBox='0%200%20399.193%20399.193'%20xml:space='preserve'%3e%3cg%3e%3cpath%20d='M375.337,97.308c-3.136-4.547-9.364-5.691-13.909-2.557c-4.547,3.135-5.692,9.362-2.557,13.909%20c13.295,19.284,20.322,42.543,20.322,67.264c0,24.627-7.35,48.709-20.694,67.81c-3.163,4.527-2.058,10.762,2.47,13.925%20c1.744,1.219,3.741,1.804,5.719,1.804c3.155,0,6.262-1.491,8.206-4.273c15.897-22.753,24.3-50.163,24.3-79.265%20C399.193,147.131,390.943,119.946,375.337,97.308z'/%3e%3cpath%20d='M342.47,125.562c-3.134-4.547-9.361-5.692-13.909-2.557c-4.547,3.135-5.691,9.362-2.556,13.909%20c7.72,11.197,11.801,24.726,11.801,39.124c0,14.344-4.268,28.352-12.016,39.443c-3.163,4.527-2.058,10.762,2.47,13.925%20c1.744,1.218,3.741,1.803,5.719,1.803c3.156,0,6.262-1.49,8.206-4.274c10.22-14.627,15.621-32.228,15.621-50.897%20C357.806,157.567,352.503,140.113,342.47,125.562z'/%3e%3cpath%20d='M303.027,20.495c-4.954,0-9.532,2.757-13.586,8.167c-0.328,0.432-33.738,43.425-117.107,69.128%20c-7.914,2.44-16.663,4.163-16.748,4.18c-1.978,0.386-3.888,1.004-5.707,1.82c-3.508-5.791-9.85-9.681-17.1-9.681H48.635%20c-11.028,0-20,8.972-20,20v10.979c-1.402-0.22-2.844-0.342-4.317-0.342C10.909,124.746,0,134.272,0,145.98v55.29%20c0,11.708,10.909,21.234,24.317,21.234c1.474,0,2.915-0.121,4.317-0.342v8.979c0,11.028,8.972,20,20,20h2.704L76.731,356.46%20c3.007,12.47,15.41,22.238,28.237,22.238h26.873c7.017,0,13.365-2.951,17.417-8.096c4.053-5.145,5.434-12.008,3.789-18.83%20l-24.262-100.631h3.993c7.253,0,13.597-3.893,17.104-9.687c1.816,0.815,3.724,1.432,5.698,1.818%20c0.087,0.017,8.836,1.742,16.748,4.186c83.375,25.756,116.782,68.707,117.09,69.11c4.074,5.433,8.651,8.188,13.604,8.188%20c0,0,0,0,0.001,0c4.896,0,9.178-2.776,11.453-7.425c1.307-2.668,1.941-5.862,1.941-9.763V37.681%20C316.419,20.977,304.397,20.495,303.027,20.495z%20M24.317,202.504c-2.463,0-3.935-1.02-4.317-1.5v-54.759%20c0.383-0.48,1.854-1.5,4.317-1.5s3.935,1.02,4.317,1.5v54.759C28.252,201.485,26.78,202.504,24.317,202.504z%20M133.604,356.46%20c0.216,0.896,0.127,1.533-0.058,1.768s-0.783,0.471-1.705,0.471h-26.873c-3.662,0-7.936-3.366-8.794-6.926L71.912,251.141h36.3%20L133.604,356.46z%20M48.635,231.141V201.27v-55.29v-31.871h84.145l0,15.539c0,0.004,0,0.007,0,0.011v85.922%20c0,0.024,0.002,0.047,0.002,0.071l0,15.489H48.635z%20M296.419,294.556c-15.581-15.585-52.326-45.861-118.187-66.207%20c-8.957-2.768-18.415-4.627-18.813-4.706c-3.413-0.667-6.64-4.585-6.64-8.063v-85.922c0-3.477,3.227-7.394,6.639-8.06%20c0.398-0.078,9.853-1.935,18.809-4.697c65.854-20.303,102.604-50.591,118.192-66.192V294.556z'/%3e%3c/g%3e%3c/svg%3e");
+          background-size: contain;
+          margin-right: 0.2em;
+        }
+      }
+
+      div.notice-body {
+        padding: 0 .5em;
+      }
+
+      div.notice-action {
+        display: flex;
+        justify-content: end;
+
+        button {
+          color: #fefefe;
+          background: #222;
+          border: none;
+          border-radius: 20px;
+          padding: 5px 10px;
+          position: relative;
+          overflow: hidden;
+          width: 50%;
+          height: 50px;
+
+          &:active:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+          }
+        }
+      }
+    }
+
+    #donate {
+      position: fixed;
+      bottom: calc(160px + 1.5rem);
+      left: 1rem;
+      z-index: 999;
+      visibility: visible;
+      opacity: 1;
+      transition: visibility 0s, opacity 1s linear;
+
+      &.hide {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
+    @media screen and (max-width: 750px) {
+      #donate {
+        bottom: 2rem;
+      }
+
+      #settings {
+        bottom: calc(2.5rem + 60px);
+        display: block;
+        min-width: 0;
+        max-width: 100%;
+        width: calc(100% - 2rem);
+        overflow: hidden;
+        opacity: 1;
+        visibility: visible;
+        transition: visibility 0s, opacity 1s linear;
+
+        &.hide {
+          opacity: 0;
+          visibility: hidden;
+        }
+
+        div.right div.row {
+          height: auto;
+          display: block;
+          border-bottom: 1px solid #555;
+          padding: .5rem 0;
+
+          label {
+            width: 100%;
+            margin-bottom: .5rem;
+            padding-left: 0;
+            display: block;
+          }
+
+          .icon {
+            width: 15px;
+            height: 15px;
+          }
+        }
+      }
+
+
+      #notice {
+        position: fixed;
+        box-sizing: border-box;
+        top: 0;
+        left: 0;
+        width: 100%;
+        max-width: 100%;
+        height: 100%;
+        transform: none;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 4px;
+        z-index: 1001;
+        padding: 5px 10px;
+        color: #333;
+        display: none;
+        flex-direction: column;
+
+        div.notice-body {
+          flex-grow: 1;
+        }
+
+      }
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/index-lEsj3Ure.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+
+  gtag('js', new Date());
+  gtag('config', 'G-5899C1DJM0');
+
+  function getNames() {
+    const value = document.querySelector('#in_names').value.trim();
+    return value.split(/[,\r\n]/g).map(v => v.trim()).filter(v => !!v);
+  }
+
+  function parseName(nameStr) {
+    const weightRegex = /(\/\d+)/;
+    const countRegex = /(\*\d+)/;
+    const hasWeight = weightRegex.test(nameStr);
+    const hasCount = countRegex.test(nameStr);
+    const name = /^\s*([^\/*]+)?/.exec(nameStr)[1];
+    const weight = hasWeight ? parseInt(weightRegex.exec(nameStr)[1].replace('/', '')) : 1;
+    const count = hasCount ? parseInt(countRegex.exec(nameStr)[1].replace('*', '')) : 1;
+    return {
+      name,
+      weight,
+      count,
+    };
+  }
+
+  function getReady() {
+    const names = getNames();
+    window.roullete.setMarbles(names);
+    ready = names.length > 0;
+    localStorage.setItem('mbr_names', names.join(','));
+    switch (winnerType) {
+      case 'first':
+        setWinnerRank(1);
+        break;
+      case 'last':
+        const total = window.roullete.getCount();
+        setWinnerRank(total);
+        break;
+    }
+  }
+
+  function setWinnerRank(rank) {
+    document.querySelector('#in_winningRank').value = rank;
+    window.options.winningRank = rank - 1;
+    window.roullete.setWinningRank(window.options.winningRank);
+
+    if (winnerType === 'first') {
+      document.querySelector('.btn-first-winner').classList.toggle('active', true);
+      document.querySelector('.btn-last-winner').classList.toggle('active', false);
+      document.querySelector('#in_winningRank').classList.toggle('active', false);
+    } else if (winnerType === 'last') {
+      document.querySelector('.btn-first-winner').classList.toggle('active', false);
+      document.querySelector('.btn-last-winner').classList.toggle('active', true);
+      document.querySelector('#in_winningRank').classList.toggle('active', false);
+    } else if (winnerType === 'custom') {
+      document.querySelector('.btn-first-winner').classList.toggle('active', false);
+      document.querySelector('.btn-last-winner').classList.toggle('active', false);
+      document.querySelector('#in_winningRank').classList.toggle('active', true);
+    }
+  }
+
+
+  let ready = false;
+  let winnerType = 'first';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initialize();
+  });
+
+  function initialize() {
+    if (!window.roullete || !window.roullete.isReady) {
+      console.log('does not loaded yet');
+      setTimeout(initialize, 100);
+      return;
+    }
+    console.log('initializing start');
+
+    const savedNames = localStorage.getItem('mbr_names');
+    if (savedNames) {
+      document.querySelector('#in_names').value = savedNames;
+    }
+    document.querySelector('#in_names').addEventListener('input', () => {
+      getReady();
+    });
+
+    document.querySelector('#in_names').addEventListener('blur', () => {
+      const nameSource = getNames();
+      const nameSet = new Set();
+      const nameCounts = {};
+      nameSource.forEach(nameSrc => {
+        const name = parseName(nameSrc);
+        const key = name.weight > 1 ? `${name.name}/${name.weight}` : name.name;
+        if (!nameSet.has(key)) {
+          nameSet.add(key);
+          nameCounts[key] = 0;
+        }
+        nameCounts[key] += name.count;
+      });
+      const result = [];
+      Object.keys(nameCounts).forEach(key => {
+        if (nameCounts[key] > 1) {
+          result.push(`${key}*${nameCounts[key]}`);
+        } else {
+          result.push(key);
+        }
+      });
+
+      const oldValue = document.querySelector('#in_names').value;
+      const newValue = result.join(',');
+
+      if (oldValue !== newValue) {
+        document.querySelector('#in_names').value = newValue;
+        getReady();
+      }
+    });
+
+    document.querySelector('#btnShuffle').addEventListener('click', () => {
+      getReady();
+    });
+
+    document.querySelector('#btnStart').addEventListener('click', () => {
+      if (!ready) return;
+      gtag && gtag('event', 'start', {
+        'event_category': 'roulette',
+        'event_label': 'start',
+        'value': window.roullete.getCount(),
+      });
+      window.roullete.start();
+      document.querySelector('#settings').classList.add('hide');
+      document.querySelector('#donate').classList.add('hide');
+    });
+
+    document.querySelector('#chkAutoRecording').addEventListener('change', (e) => {
+      window.options.autoRecording = e.target.matches(':checked');
+      window.roullete.setAutoRecording(window.options.autoRecording);
+    });
+
+    document.querySelector('#chkSkill').addEventListener('change', (e) => {
+      window.options.useSkills = e.target.matches(':checked');
+      window.roullete.setWinningRank(window.options.winningRank);
+    });
+
+    document.querySelector('#in_winningRank').addEventListener('change', (e) => {
+      const v = parseInt(e.target.value, 10);
+      winnerType = 'custom';
+      setWinnerRank(isNaN(v) ? 0 : v);
+    });
+
+    document.querySelector('.btn-last-winner').addEventListener('click', () => {
+      const total = window.roullete.getCount();
+      winnerType = 'last';
+      setWinnerRank(total);
+    });
+    document.querySelector('.btn-first-winner').addEventListener('click', () => {
+      winnerType = 'first';
+      setWinnerRank(1);
+    });
+
+    document.querySelector('#btnShake').addEventListener('click', () => {
+      window.roullete.shake();
+      gtag('event', 'shake', {
+        'event_category': 'roulette',
+        'event_label': 'shake',
+        'value': 1,
+      });
+    });
+
+    window.roullete.addEventListener('goal', () => {
+      ready = false;
+      setTimeout(() => {
+        document.querySelector('#settings').classList.remove('hide');
+        document.querySelector('#donate').classList.remove('hide');
+      }, 3000);
+    });
+    window.roullete.addEventListener('shakeAvailableChanged', (e) => {
+      document.querySelector('#inGame').classList.toggle('hide', !e.detail);
+    });
+
+    document.querySelector('#btnShuffle').click();
+
+    const maps = window.roullete.getMaps();
+    const mapSelector = document.querySelector('#sltMap');
+    maps.forEach((map) => {
+      const option = document.createElement('option');
+      option.value = map.index;
+      option.innerHTML = map.title;
+      option.setAttribute('data-trans', '');
+      window.translateElement(option);
+      mapSelector.append(option);
+    });
+    mapSelector.addEventListener('change', (e) => {
+      const index = e.target.value;
+      window.roullete.setMap(index);
+    });
+
+    const checkDonateButtonLoaded = () => {
+      const btn = document.querySelector('span.bmc-btn-text');
+      if (!btn) {
+        setTimeout(checkDonateButtonLoaded, 100);
+      } else {
+        console.log('donation button has been loaded');
+        btn.setAttribute('data-trans', '');
+        window.translateElement(btn);
+      }
+    };
+    setTimeout(checkDonateButtonLoaded, 100);
+
+    const currentNotice = 1;
+    const noticeKey = 'lastViewedNotification';
+
+    const closeNotice = () => {
+      document.querySelector('#notice').style.display = 'none';
+      localStorage.setItem(noticeKey, currentNotice.toString());
+    }
+
+    const openNotice = () => {
+      console.log('openNotice');
+      document.querySelector('#notice').style.display = 'flex';
+    }
+
+    document.querySelector('#closeNotice').addEventListener('click', () => {
+      closeNotice();
+    });
+
+    document.querySelector('#btnNotice').addEventListener('click', () => {
+      openNotice();
+    })
+
+    const checkNotice = () => {
+      const lastViewed = localStorage.getItem(noticeKey);
+      console.log('lastViewed', lastViewed);
+      if (lastViewed === null || Number(lastViewed) < currentNotice) {
+        openNotice();
+      }
+    };
+
+    checkNotice();
+
+
+  }
+</script>
+<div id="settings" class="settings">
+  <div class="right">
+    <div class="row">
+      <label>
+        <i class="icon map"></i>
+        <span data-trans>Map</span>
+      </label>
+      <select id="sltMap"></select>
+    </div>
+    <div class="row">
+      <label>
+        <i class="icon record"></i>
+        <span data-trans>Recording</span>
+      </label>
+      <input type="checkbox" id="chkAutoRecording" />
+    </div>
+    <div class="row">
+      <label>
+        <i class="icon trophy"></i>
+        <span data-trans>The winner is</span>
+      </label>
+      <div class="btn-group">
+        <button class="btn-winner btn-first-winner active" data-trans>First</button>
+        <button class="btn-winner btn-last-winner" data-trans>Last</button>
+        <input type="number" id="in_winningRank" value="1" min="1" />
+      </div>
+    </div>
+    <div class="row">
+      <label>
+        <i class="icon bomb"></i>
+        <span data-trans>Using skills</span>
+      </label>
+      <input type="checkbox" id="chkSkill" checked />
+    </div>
+  </div>
+  <div class="left">
+    <h3 data-trans>Enter names below</h3>
+    <textarea id="in_names" placeholder="Input names separated by commas or line feed here" data-trans="placeholder">짱구*5, 짱아*10, 봉미선*3</textarea>
+    <div class="actions">
+      <button id="btnNotice">
+        <i class="icon megaphone"></i>
+      </button>
+      <div class="sep"></div>
+      <button id="btnShuffle">
+        <i class="icon shuffle"></i>
+        <span data-trans>Shuffle</span>
+      </button>
+      <button id="btnStart">
+        <i class="icon play"></i>
+        <span data-trans>Start</span>
+      </button>
+    </div>
+  </div>
+</div>
+<div id="donate">
+  <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
+          data-name="bmc-button" data-slug="lazygyu" data-color="#FFDD00" data-emoji=""
+          data-font="Comic" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000"
+          data-coffee-color="#ffffff"></script>
+</div>
+<div id="inGame" class="settings hide">
+  <button id="btnShake" data-trans>Shake!</button>
+</div>
+<div id="notice">
+  <h1>Notice</h1>
+  <div class="notice-body">
+    <p>이 프로그램은 무료이며 사용에 아무런 제한이 없습니다.</p>
+    <p>이 프로그램의 사용이나 프로그램을 이용한 영상 제작, 방송 등에 원작자는 아무런 제재를 가하거나 이의를 제기하지 않습니다. 자유롭게 사용하셔도 됩니다.</p>
+    <p>다만 저작권자를 사칭하는 것은 저작권법을 위반하는 범죄입니다.</p>
+    <p>저작권자를 사칭하여 권리 침해를 주장하는 경우를 보거나 겪으시는 분은 <a href="mailto:lazygyu+legal@gmail.com" target="_blank">lazygyu+legal@gmail.com</a> 으로 제보 부탁드립니다.</p>
+    <p>감사합니다.</p>
+  </div>
+  <div class="notice-action">
+    <button id="closeNotice" data-trans>Close</button>
+  </div>
+</div>
+<div class="copyright">&copy; 2025.<a href="https://lazygyu.net" target="_blank">lazygyu</a> <span data-trans>This program is freeware and may be used freely anywhere, including in broadcasts and videos.</span></div>
+</body>
+</html>
